@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CliDsl.App", "CliDsl.App\CliDsl.App.csproj", "{38A5C856-AF66-4401-968E-B3515C1671B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CliDsl.Lib", "CliDsl.Lib\CliDsl.Lib.csproj", "{D781133A-CAF5-4B3B-8776-2C8B85AAE400}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CliDsl.Test", "CliDsl.Test\CliDsl.Test.csproj", "{09B23346-02BF-4B14-B2CE-95AD348A09CE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38A5C856-AF66-4401-968E-B3515C1671B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38A5C856-AF66-4401-968E-B3515C1671B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38A5C856-AF66-4401-968E-B3515C1671B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38A5C856-AF66-4401-968E-B3515C1671B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D781133A-CAF5-4B3B-8776-2C8B85AAE400}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D781133A-CAF5-4B3B-8776-2C8B85AAE400}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D781133A-CAF5-4B3B-8776-2C8B85AAE400}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D781133A-CAF5-4B3B-8776-2C8B85AAE400}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09B23346-02BF-4B14-B2CE-95AD348A09CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09B23346-02BF-4B14-B2CE-95AD348A09CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09B23346-02BF-4B14-B2CE-95AD348A09CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09B23346-02BF-4B14-B2CE-95AD348A09CE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
