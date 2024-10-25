@@ -47,4 +47,10 @@ public class LexerTest
     {
         RunTest(LexerTestHelper.CreateSelfCommand());
     }
+
+    [TestMethod]
+    public void ShouldTokenizeIndentedEmbeddedScript()
+    {
+        RunTest(LexerTestHelper.CreatedIndentedEmbeddedScript());
+    }
 }

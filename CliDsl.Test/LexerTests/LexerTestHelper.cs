@@ -9,6 +9,7 @@ namespace CliDsl.Test.LexerTests
             var program = @"
 cmd something sh {
     echo hello
+    echo goodbye
 }
 ";
             var tokens = new List<LexerToken>()
@@ -17,8 +18,7 @@ cmd something sh {
                 new LexerToken(LexerTokenType.Identifier, "something"),
                 new LexerToken(LexerTokenType.ScriptType, "sh"),
                 new LexerToken(LexerTokenType.BlockStart),
-                new LexerToken(LexerTokenType.Script, "echo"),
-                new LexerToken(LexerTokenType.Script, "hello"),
+                    new LexerToken(LexerTokenType.Script, "echo hello\necho goodbye"),
                 new LexerToken(LexerTokenType.BlockEnd),
             };
 
@@ -48,16 +48,14 @@ cmd build cmds {
                     new LexerToken(LexerTokenType.Identifier, "server"),
                     new LexerToken(LexerTokenType.ScriptType, "sh"),
                     new LexerToken(LexerTokenType.BlockStart),
-                        new LexerToken(LexerTokenType.Script, "echo"),
-                        new LexerToken(LexerTokenType.Script, "server"),
+                        new LexerToken(LexerTokenType.Script, "echo server"),
                     new LexerToken(LexerTokenType.BlockEnd),
 
                     new LexerToken(LexerTokenType.Command),
                     new LexerToken(LexerTokenType.Identifier, "client"),
                     new LexerToken(LexerTokenType.ScriptType, "sh"),
                     new LexerToken(LexerTokenType.BlockStart),
-                        new LexerToken(LexerTokenType.Script, "echo"),
-                        new LexerToken(LexerTokenType.Script, "client"),
+                        new LexerToken(LexerTokenType.Script, "echo client"),
                     new LexerToken(LexerTokenType.BlockEnd),
                 new LexerToken(LexerTokenType.BlockEnd),
             };
@@ -80,16 +78,13 @@ arg someArg {
             {
                 new LexerToken(LexerTokenType.Summary),
                 new LexerToken(LexerTokenType.BlockStart),
-                new LexerToken(LexerTokenType.Docs, "Some"),
-                new LexerToken(LexerTokenType.Docs, "description."),
+                    new LexerToken(LexerTokenType.Docs, "Some description."),
                 new LexerToken(LexerTokenType.BlockEnd),
 
                 new LexerToken(LexerTokenType.Argument),
                 new LexerToken(LexerTokenType.Identifier, "someArg"),
                 new LexerToken(LexerTokenType.BlockStart),
-                new LexerToken(LexerTokenType.Docs, "Some"),
-                new LexerToken(LexerTokenType.Docs, "parameter"),
-                new LexerToken(LexerTokenType.Docs, "description."),
+                    new LexerToken(LexerTokenType.Docs, "Some parameter description."),
                 new LexerToken(LexerTokenType.BlockEnd),
             };
 
@@ -109,11 +104,31 @@ cmd self sh {
                 new LexerToken(LexerTokenType.Self),
                 new LexerToken(LexerTokenType.ScriptType, "sh"),
                 new LexerToken(LexerTokenType.BlockStart),
-                new LexerToken(LexerTokenType.Script, "echo"),
-                new LexerToken(LexerTokenType.Script, "hello"),
+                    new LexerToken(LexerTokenType.Script, "echo hello"),
                 new LexerToken(LexerTokenType.BlockEnd),
             };
 
+            return (program, tokens);
+        }
+
+        public static (string Program, IEnumerable<LexerToken> ExpectedTokens) CreatedIndentedEmbeddedScript()
+        {
+            var program = @"
+cmd something madeUpLang {
+    for thing in things
+        echo thing.status
+    end
+}
+";
+            var tokens = new List<LexerToken>()
+            {
+                new LexerToken(LexerTokenType.Command),
+                new LexerToken(LexerTokenType.Identifier, "something"),
+                new LexerToken(LexerTokenType.ScriptType, "madeUpLang"),
+                new LexerToken(LexerTokenType.BlockStart),
+                    new LexerToken(LexerTokenType.Script, "for thing in things\n    echo thing.status\nend"),
+                new LexerToken(LexerTokenType.BlockEnd),
+            };
             return (program, tokens);
         }
     }

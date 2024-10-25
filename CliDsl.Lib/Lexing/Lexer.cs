@@ -1,5 +1,4 @@
-﻿
-namespace CliDsl.Lib.Lexing;
+﻿namespace CliDsl.Lib.Lexing;
 
 public class Lexer
 {
@@ -11,14 +10,24 @@ public class Lexer
     {
         tokens.Clear();
 
-        var program = reader.ReadToEnd();
-        // TODO(improvement): it would be better to maintain the whole lines for embedded scripts to keep context
-        var rawTokens = program.Split().Where(s => !string.IsNullOrEmpty(s));
-
-        foreach (var rawToken in rawTokens)
+        string line;
+        var elex = new EmbeddedStringLexer();
+        while ((line = reader.ReadLine()) != null)
         {
-            var token = ToToken(rawToken);
-            tokens.Add(token);
+            var rawTokens = line.Split().Where(s => !string.IsNullOrEmpty(s));
+            if (!rawTokens.Any())
+            {
+                continue;
+            }
+
+            var tokenPeek = ToToken(rawTokens.First());
+            var charPeek = reader.Peek();
+            if (elex.Process(line, tokenPeek, charPeek, tokens))
+            {
+                continue;
+            }
+
+            tokens.AddRange(rawTokens.Select(ToToken));
         }
 
         return tokens;
@@ -96,5 +105,65 @@ public class Lexer
         }
 
         return token;
+    }
+
+    private static string Dedent(string s, int n)
+    {
+        int count = 0;
+
+        foreach (var c in s.ToCharArray())
+        {
+            if (count == n || !char.IsWhiteSpace(c))
+            {
+                break;
+            }
+            count++;
+        }
+        return s.Substring(count);
+    }
+
+    /// <summary>
+    /// Parse embedded scripts or docs strings as a single token.
+    /// Dedents the string based on the indentation of the first line.
+    /// </summary>
+    private class EmbeddedStringLexer
+    {
+        private LexerTokenType embeddedType = LexerTokenType.ScriptType;
+        private List<string> embeddedLines = [];
+        private int dedent = 0;
+
+        public bool Process(string line, LexerToken tokenPeek, int charPeek, List<LexerToken> tokens)
+        {
+            var shouldContinue = false;
+            if (tokenPeek.Type == LexerTokenType.Script || tokenPeek.Type == LexerTokenType.Docs)
+            {
+                var isFirst = embeddedLines.Count == 0;
+                string t;
+                if (isFirst)
+                {
+                    t = line.TrimStart();
+                    dedent = line.Length - t.Length;
+                }
+                else
+                {
+                    t = Dedent(line, dedent);
+                }
+                embeddedType = tokenPeek.Type;
+                embeddedLines.Add(t);
+                shouldContinue = true;
+            }
+            else if (embeddedLines.Count != 0)
+            {
+                var p = charPeek;
+                var newLine = p == '\r' ? "\r\n" : "\n";
+                var embedded = string.Join(newLine, embeddedLines);
+                var embeddedToken = new LexerToken(embeddedType, embedded);
+                tokens.Add(embeddedToken);
+
+                embeddedLines.Clear();
+            }
+
+            return shouldContinue;
+        }
     }
 }
