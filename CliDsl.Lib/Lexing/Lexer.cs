@@ -42,7 +42,7 @@ public class Lexer
                 token = new LexerToken(LexerTokenType.Command);
                 break;
             case "self":
-                token = new LexerToken(LexerTokenType.Self);
+                token = new LexerToken(LexerTokenType.Self, "self");
                 break;
             case "summary":
                 token = new LexerToken(LexerTokenType.Summary);

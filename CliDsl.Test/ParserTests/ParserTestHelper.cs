@@ -1,17 +1,13 @@
-﻿using CliDsl.Lib.Lexing;
+﻿
+using CliDsl.Lib.Lexing;
+using CliDsl.Lib.Parsing;
 
-namespace CliDsl.Test.LexerTests
+namespace CliDsl.Test.ParserTests
 {
-    public static class LexerTestHelper
+    public static class ParserTestHelper
     {
-        public static (string Program, IEnumerable<LexerToken> ExpectedTokens) CreateSimpleCommand()
+        public static (IEnumerable<LexerToken> ExpectedTokens, AstParentCommand ExpectedAst) CreateSimpleCommand()
         {
-            var program = @"
-cmd something sh {
-    echo hello
-    echo goodbye
-}
-";
             var tokens = new List<LexerToken>()
             {
                 new LexerToken(LexerTokenType.Command),
@@ -21,23 +17,14 @@ cmd something sh {
                     new LexerToken(LexerTokenType.Script, "echo hello\necho goodbye"),
                 new LexerToken(LexerTokenType.BlockEnd),
             };
+            var ast = new AstParentCommand("root", "", [new AstScriptCommand("something", "sh", "echo hello\necho goodbye")], []);
 
-            return (program, tokens);
+
+            return (tokens, ast);
         }
 
-        public static (string Program, IEnumerable<LexerToken> ExpectedTokens) CreateNestedCommands()
+        public static (IEnumerable<LexerToken> ExpectedTokens, AstParentCommand ExpectedAst) CreateNestedCommands()
         {
-            var program = @"
-cmd build cmds {
-   cmd server sh {
-       echo server
-   }
-
-   cmd client sh {
-       echo client
-   }
-}
-";
             var tokens = new List<LexerToken>()
             {
                 new LexerToken(LexerTokenType.Command),
@@ -59,21 +46,18 @@ cmd build cmds {
                     new LexerToken(LexerTokenType.BlockEnd),
                 new LexerToken(LexerTokenType.BlockEnd),
             };
+            var ast = new AstParentCommand("root", "", [
+                new AstParentCommand("build", "", [
+                    new AstScriptCommand("server", "sh", "echo server"),
+                    new AstScriptCommand("client", "sh", "echo client"),
+                ], []),
+            ], []);
 
-            return (program, tokens);
+            return (tokens, ast);
         }
 
-        public static (string Program, List<LexerToken> ExpectedTokens) CreateDocs()
+        public static (IEnumerable<LexerToken> ExpectedTokens, AstParentCommand ExpectedAst) CreateDocs()
         {
-            var program = @"
-summary {
-    Some description.
-}
-
-arg someArg {
-    Some parameter description.
-}
-";
             var tokens = new List<LexerToken>()
             {
                 new LexerToken(LexerTokenType.Summary),
@@ -87,17 +71,15 @@ arg someArg {
                     new LexerToken(LexerTokenType.Docs, "Some parameter description."),
                 new LexerToken(LexerTokenType.BlockEnd),
             };
+            var ast = new AstParentCommand("root", "Some description.", [], [
+                new AstArgument("someArg", "Some parameter description."),
+             ]);
 
-            return (program, tokens);
+            return (tokens, ast);
         }
 
-        public static (string Program, List<LexerToken> ExpectedTokens) CreateSelfCommand()
+        public static (IEnumerable<LexerToken> ExpectedTokens, AstParentCommand ExpectedAst) CreateSelfCommand()
         {
-            var program = @"
-cmd self sh {
-    echo hello
-}
-";
             var tokens = new List<LexerToken>()
             {
                 new LexerToken(LexerTokenType.Command),
@@ -107,19 +89,15 @@ cmd self sh {
                     new LexerToken(LexerTokenType.Script, "echo hello"),
                 new LexerToken(LexerTokenType.BlockEnd),
             };
+            var ast = new AstParentCommand("root", "", [
+                new AstScriptCommand("self", "sh", "echo hello"),
+            ], []);
 
-            return (program, tokens);
+            return (tokens, ast);
         }
 
-        public static (string Program, IEnumerable<LexerToken> ExpectedTokens) CreatedIndentedEmbeddedScript()
+        public static (IEnumerable<LexerToken> ExpectedTokens, AstParentCommand ExpectedAst) CreatedIndentedEmbeddedScript()
         {
-            var program = @"
-cmd something madeUpLang {
-    for thing in things
-        echo thing.status
-    end
-}
-";
             var tokens = new List<LexerToken>()
             {
                 new LexerToken(LexerTokenType.Command),
@@ -129,7 +107,10 @@ cmd something madeUpLang {
                     new LexerToken(LexerTokenType.Script, "for thing in things\n    echo thing.status\nend"),
                 new LexerToken(LexerTokenType.BlockEnd),
             };
-            return (program, tokens);
+            var ast = new AstParentCommand("root", "", [
+                new AstScriptCommand("something", "madeUpLang", "for thing in things\n    echo thing.status\nend"),    
+            ], []);
+            return (tokens, ast);
         }
     }
 }
