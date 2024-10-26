@@ -20,14 +20,25 @@ namespace CliDsl.Test.EngineTests
 
         private void RunTest((string Program, string[] Args, AstScriptCommand ExpectedCommand, List<string> ExpectedParameters) testCase)
         {
-            var (program, args, expectedCommand, expectedParams) = testCase;
+            RunTest((testCase.Program, testCase.Args, [testCase.ExpectedCommand], testCase.ExpectedParameters));
+        }
+
+        private void RunTest((string Program, string[] Args, IEnumerable<AstScriptCommand> ExpectedCommands, List<string> ExpectedParameters) testCase)
+        {
+            var (program, args, expectedCommands, expectedParams) = testCase;
+            var expectedCommandsArr = expectedCommands.ToArray();
 
             interpreter.Run(program, args);
 
-            Assert.AreEqual(scriptRunnerSpy.Invocations.Count, 1);
-            var invocation = scriptRunnerSpy.Invocations.Single();
-            AssertExtensions.AreEqual(expectedParams, invocation.Parameters);
-            Assert.AreEqual(expectedCommand, invocation.Command);
+            Assert.AreEqual(scriptRunnerSpy.Invocations.Count, expectedCommandsArr.Length);
+            for (var i = 0; i < expectedCommandsArr.Length; i++)
+            {
+                var cmd = expectedCommandsArr[i];
+                var invocation = scriptRunnerSpy.Invocations[i];
+
+                AssertExtensions.AreEqual(expectedParams, invocation.Parameters);
+                Assert.AreEqual(cmd, invocation.Command);
+            }
         }
 
         [TestMethod]
@@ -58,6 +69,19 @@ namespace CliDsl.Test.EngineTests
         public void ShouldRunCombinedCommand()
         {
             RunTest(InterpreterTestHelper.CreateCombinedCommand());
+        }
+
+        [TestMethod]
+        public void ShouldRunNestedCombinedCommand()
+        {
+            RunTest(InterpreterTestHelper.CreateNestedCombinedCommand());
+        }
+
+
+        [TestMethod]
+        public void ShouldRunNestedCombinedSelfCommand()
+        {
+            RunTest(InterpreterTestHelper.CreateNestedCombinedSelfCommand());
         }
     }
 }

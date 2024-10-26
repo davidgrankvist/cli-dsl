@@ -68,7 +68,7 @@ cmd parent cmds {
             return (program, args, expectedCommand, expectedParameters);
         }
 
-        public static (string Program, string[] Args, AstScriptCommand ExpectedCommand, List<string> ExpectedParameters) CreateCombinedCommand()
+        public static (string Program, string[] Args, IEnumerable<AstScriptCommand> ExpectedCommands, List<string> ExpectedParameters) CreateCombinedCommand()
         {
             var program = @"
 cmd something sh {
@@ -86,10 +86,71 @@ cmd multi cmdz {
 ";
             string[] args = ["multi"];
 
-            var expectedCommand = new AstScriptCommand("multi", ScriptEnvironment.Commands, "something\nsomethingElse");
+            List<AstScriptCommand> expectedCommands = [
+                new AstScriptCommand("something", ScriptEnvironment.Sh, "echo hello"),
+                new AstScriptCommand("somethingElse", ScriptEnvironment.Sh, "echo helloo")
+             ];
             var expectedParameters = new List<string>();
 
-            return (program, args, expectedCommand, expectedParameters);
+            return (program, args, expectedCommands, expectedParameters);
+        }
+
+        public static (string Program, string[] Args, IEnumerable<AstScriptCommand> ExpectedCommands, List<string> ExpectedParameters) CreateNestedCombinedCommand()
+        {
+            var program = @"
+cmd nested cmds {
+    cmd something sh {
+        echo hello
+    }
+
+    cmd somethingElse sh {
+        echo helloo
+    }
+
+    cmd multi cmdz {
+        something
+        somethingElse
+    }
+}
+";
+            string[] args = ["nested", "multi"];
+
+            List<AstScriptCommand> expectedCommands = [
+                new AstScriptCommand("something", ScriptEnvironment.Sh, "echo hello"),
+                new AstScriptCommand("somethingElse", ScriptEnvironment.Sh, "echo helloo")
+             ];
+            var expectedParameters = new List<string>();
+
+            return (program, args, expectedCommands, expectedParameters);
+        }
+
+        public static (string Program, string[] Args, IEnumerable<AstScriptCommand> ExpectedCommands, List<string> ExpectedParameters) CreateNestedCombinedSelfCommand()
+        {
+            var program = @"
+cmd nested cmds {
+    cmd something sh {
+        echo hello
+    }
+
+    cmd somethingElse sh {
+        echo helloo
+    }
+
+    cmd self cmdz {
+        something
+        somethingElse
+    }
+}
+";
+            string[] args = ["nested"];
+
+            List<AstScriptCommand> expectedCommands = [
+                new AstScriptCommand("something", ScriptEnvironment.Sh, "echo hello"),
+                new AstScriptCommand("somethingElse", ScriptEnvironment.Sh, "echo helloo")
+             ];
+            var expectedParameters = new List<string>();
+
+            return (program, args, expectedCommands, expectedParameters);
         }
     }
 }

@@ -19,15 +19,25 @@ namespace CliDsl.Test.ExecutionTests
 
         private void RunTest((AstParentCommand Ast, ExecutionArguments Args, AstScriptCommand ExpectedCommand) testCase)
         {
-            var (ast, args, expectedCommand) = testCase;
+            RunTest((testCase.Ast, testCase.Args, [testCase.ExpectedCommand]));
+        }
+
+        private void RunTest((AstParentCommand Ast, ExecutionArguments Args, IEnumerable<AstScriptCommand> ExpectedCommands) testCase)
+        {
+            var (ast, args, expectedCommands) = testCase;
+            var expectedCommandsArr = expectedCommands.ToArray();
 
             executor.Execute(ast, args);
 
-            Assert.AreEqual(scriptRunnerSpy.Invocations.Count, 1);
+            Assert.AreEqual(scriptRunnerSpy.Invocations.Count, expectedCommandsArr.Length);
+            for (var i = 0;  i < expectedCommandsArr.Length; i++)
+            {
+                var command = expectedCommandsArr[i];
 
-            var invocation = scriptRunnerSpy.Invocations.Single();
-            AssertExtensions.AreEqual(args.Parameters, invocation.Parameters);
-            Assert.AreEqual(expectedCommand, invocation.Command);
+                var invocation = scriptRunnerSpy.Invocations[i];
+                AssertExtensions.AreEqual(args.Parameters, invocation.Parameters);
+                Assert.AreEqual(command, invocation.Command);
+            }
         }
 
         [TestMethod]
@@ -52,6 +62,30 @@ namespace CliDsl.Test.ExecutionTests
         public void ShouldExecuteNestedSelfCommand()
         {
             RunTest(ExecutorTestHelper.CreateNestedSelfCommand());
+        }
+
+        [TestMethod]
+        public void ShouldExecuteCombinedCommand()
+        {
+            RunTest(ExecutorTestHelper.CreateCombinedCommand());
+        }
+
+        [TestMethod]
+        public void ShouldExecuteNestedCombinedCommand()
+        {
+            RunTest(ExecutorTestHelper.CreateNestedCombinedCommand());
+        }
+
+        [TestMethod]
+        public void ShouldExecuteCombinedSelfCommand()
+        {
+            RunTest(ExecutorTestHelper.CreateCombinedSelfCommand());
+        }
+
+        [TestMethod]
+        public void ShouldExecuteNestedCombinedSelfCommand()
+        {
+            RunTest(ExecutorTestHelper.CreateNestedCombinedSelfCommand());
         }
     }
 }

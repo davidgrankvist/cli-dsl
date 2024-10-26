@@ -19,8 +19,8 @@ cmd self bat {
 }
 
 cmd helloMixedWin cmdz {
-    hellobat
-    hellops
+    helloBat
+    helloPs
 }
 
 cmd helloMixedUnix cmdz {
