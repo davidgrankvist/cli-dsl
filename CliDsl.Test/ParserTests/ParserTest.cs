@@ -24,34 +24,40 @@ namespace CliDsl.Test.ParserTests
         }
 
         [TestMethod]
-        public void ShouldTokenizeSimpleCommand()
+        public void ShouldParseSimpleCommand()
         {
             RunTest(ParserTestHelper.CreateSimpleCommand());
         }
 
         [TestMethod]
-        public void ShouldTokenizeNestedCommands()
+        public void ShouldParseNestedCommands()
         {
             RunTest(ParserTestHelper.CreateNestedCommands());
         }
 
         [TestMethod]
-        public void ShouldTokenizeDocs()
+        public void ShouldParseDocs()
         {
             RunTest(ParserTestHelper.CreateDocs());
 
         }
 
         [TestMethod]
-        public void ShouldTokenizeSelfCommand()
+        public void ShouldParseSelfCommand()
         {
             RunTest(ParserTestHelper.CreateSelfCommand());
         }
 
         [TestMethod]
-        public void ShouldTokenizeIndentedEmbeddedScript()
+        public void ShouldParseIndentedEmbeddedScript()
         {
             RunTest(ParserTestHelper.CreatedIndentedEmbeddedScript());
+        }
+
+        [TestMethod]
+        public void ShouldParseCombinedCommand()
+        {
+            RunTest(ParserTestHelper.CreateCombinedCommand());
         }
     }
 }

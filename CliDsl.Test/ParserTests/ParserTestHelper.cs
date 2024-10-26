@@ -122,5 +122,38 @@ for (($i = 0); $i -lt 10; $i++)
             ], []);
             return (tokens, ast);
         }
+
+        public static (IEnumerable<LexerToken> ExpectedTokens, AstParentCommand ExpectedAst) CreateCombinedCommand()
+        {
+            var tokens = new List<LexerToken>()
+            {
+                new LexerToken(LexerTokenType.Command),
+                new LexerToken(LexerTokenType.Identifier, "something"),
+                new LexerToken(LexerTokenType.ScriptType, "sh"),
+                new LexerToken(LexerTokenType.BlockStart),
+                    new LexerToken(LexerTokenType.Script, "echo hello"),
+                new LexerToken(LexerTokenType.BlockEnd),
+
+                new LexerToken(LexerTokenType.Command),
+                new LexerToken(LexerTokenType.Identifier, "somethingElse"),
+                new LexerToken(LexerTokenType.ScriptType, "sh"),
+                new LexerToken(LexerTokenType.BlockStart),
+                    new LexerToken(LexerTokenType.Script, "echo helloo"),
+                new LexerToken(LexerTokenType.BlockEnd),
+
+                new LexerToken(LexerTokenType.Command),
+                new LexerToken(LexerTokenType.Identifier, "multi"),
+                new LexerToken(LexerTokenType.ScriptType, "cmdz"),
+                new LexerToken(LexerTokenType.BlockStart),
+                    new LexerToken(LexerTokenType.Script, "something\nsomethingElse"),
+                new LexerToken(LexerTokenType.BlockEnd),
+            };
+            var ast = new AstParentCommand("root", "", [
+                new AstScriptCommand("something", ScriptEnvironment.Sh, "echo hello"),
+                new AstScriptCommand("somethingElse", ScriptEnvironment.Sh, "echo helloo"),
+                new AstScriptCommand("multi", ScriptEnvironment.Commands, "something\nsomethingElse"),
+            ], []);
+            return (tokens, ast);
+        }
     }
 }

@@ -33,6 +33,16 @@ public class Lexer
         return tokens;
     }
 
+    public IEnumerable<LexerToken> Tokenize(string program)
+    {
+        IEnumerable<LexerToken> tokens;
+        using (var reader = new StringReader(program))
+        {
+            tokens = Tokenize(reader);
+        }
+        return tokens;
+    }
+
     private LexerToken ToToken(string rawToken)
     {
         LexerToken token;

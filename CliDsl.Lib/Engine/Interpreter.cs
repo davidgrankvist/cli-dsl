@@ -26,5 +26,13 @@ namespace CliDsl.Lib.Engine
             var ast = parser.Parse(tokens);
             executor.Execute(ast, executionArgs);
         }
+
+        public void Run(string program, string[] args)
+        {
+            using (var reader = new StringReader(program))
+            {
+                Run(reader, args);
+            }
+        }
     }
 }

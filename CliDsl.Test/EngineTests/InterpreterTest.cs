@@ -22,10 +22,7 @@ namespace CliDsl.Test.EngineTests
         {
             var (program, args, expectedCommand, expectedParams) = testCase;
 
-            using (var reader = new StringReader(program))
-            {
-                interpreter.Run(reader, args);
-            }
+            interpreter.Run(program, args);
 
             Assert.AreEqual(scriptRunnerSpy.Invocations.Count, 1);
             var invocation = scriptRunnerSpy.Invocations.Single();
@@ -55,6 +52,12 @@ namespace CliDsl.Test.EngineTests
         public void ShouldRunNestedSelfCommand()
         {
             RunTest(InterpreterTestHelper.CreateNestedSelfCommand());
+        }
+
+        [TestMethod]
+        public void ShouldRunCombinedCommand()
+        {
+            RunTest(InterpreterTestHelper.CreateCombinedCommand());
         }
     }
 }

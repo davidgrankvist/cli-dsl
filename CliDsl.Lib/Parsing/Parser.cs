@@ -104,7 +104,7 @@ namespace CliDsl.Lib.Parsing
                 case "cmds":
                     environment = ScriptEnvironment.ParentCommand;
                     break;
-                case "cmd":
+                case "cmdz":
                     environment = ScriptEnvironment.Commands;
                     break;
                 case "sh":

@@ -131,5 +131,48 @@ cmd something madeUpLang {
             };
             return (program, tokens);
         }
+
+        public static (string Program, List<LexerToken> ExpectedTokens) CreateCombinedCommand()
+        {
+            var program = @"
+cmd something sh {
+    echo hello
+}
+
+cmd somethingElse sh {
+    echo helloo
+}
+
+cmd multi cmdz {
+    something
+    somethingElse
+}
+";
+            var tokens = new List<LexerToken>()
+            {
+                new LexerToken(LexerTokenType.Command),
+                new LexerToken(LexerTokenType.Identifier, "something"),
+                new LexerToken(LexerTokenType.ScriptType, "sh"),
+                new LexerToken(LexerTokenType.BlockStart),
+                    new LexerToken(LexerTokenType.Script, "echo hello"),
+                new LexerToken(LexerTokenType.BlockEnd),
+
+                new LexerToken(LexerTokenType.Command),
+                new LexerToken(LexerTokenType.Identifier, "somethingElse"),
+                new LexerToken(LexerTokenType.ScriptType, "sh"),
+                new LexerToken(LexerTokenType.BlockStart),
+                    new LexerToken(LexerTokenType.Script, "echo helloo"),
+                new LexerToken(LexerTokenType.BlockEnd),
+
+                new LexerToken(LexerTokenType.Command),
+                new LexerToken(LexerTokenType.Identifier, "multi"),
+                new LexerToken(LexerTokenType.ScriptType, "cmdz"),
+                new LexerToken(LexerTokenType.BlockStart),
+                    new LexerToken(LexerTokenType.Script, "something\nsomethingElse"),
+                new LexerToken(LexerTokenType.BlockEnd),
+            };
+
+            return (program, tokens);
+        }
     }
 }

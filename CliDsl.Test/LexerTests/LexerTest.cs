@@ -53,4 +53,10 @@ public class LexerTest
     {
         RunTest(LexerTestHelper.CreatedIndentedEmbeddedScript());
     }
+
+    [TestMethod]
+    public void ShouldTokenizeCombinedCommand()
+    {
+        RunTest(LexerTestHelper.CreateCombinedCommand());
+    }
 }

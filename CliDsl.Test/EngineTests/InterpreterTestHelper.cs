@@ -67,5 +67,29 @@ cmd parent cmds {
 
             return (program, args, expectedCommand, expectedParameters);
         }
+
+        public static (string Program, string[] Args, AstScriptCommand ExpectedCommand, List<string> ExpectedParameters) CreateCombinedCommand()
+        {
+            var program = @"
+cmd something sh {
+    echo hello
+}
+
+cmd somethingElse sh {
+    echo helloo
+}
+
+cmd multi cmdz {
+    something
+    somethingElse
+}
+";
+            string[] args = ["multi"];
+
+            var expectedCommand = new AstScriptCommand("multi", ScriptEnvironment.Commands, "something\nsomethingElse");
+            var expectedParameters = new List<string>();
+
+            return (program, args, expectedCommand, expectedParameters);
+        }
     }
 }
