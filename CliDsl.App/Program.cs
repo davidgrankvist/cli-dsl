@@ -1,4 +1,5 @@
-﻿using CliDsl.Lib.Engine;
+﻿using CliDsl.App.SpecialCommands;
+using CliDsl.Lib.Engine;
 
 namespace CliDsl.App;
 
@@ -6,6 +7,12 @@ class Program
 {
     static void Main(string[] args)
     {
+        var specialCommandExecutor = new SpecialCommandExecutor();
+        if(specialCommandExecutor.Execute(args))
+        {
+            return;
+        }
+
         if (args.Length == 0)
         {
             throw new ArgumentException("Please provider a script file name");

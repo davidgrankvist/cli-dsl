@@ -89,7 +89,7 @@ namespace CliDsl.Lib.Execution
 
             if (result == null)
             {
-                throw new InvalidOperationException($"Unable to resolve path: {path}");
+                throw new InvalidOperationException($"Unable to resolve path: [{string.Join(", ", path)}]");
             }
 
             return result;
