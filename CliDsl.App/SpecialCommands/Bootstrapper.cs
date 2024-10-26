@@ -4,7 +4,7 @@
     {
         private const string CommandFileName = "commands.txt";
         private const string CliFileName = "cli";
-        private const string ExecutableName = "cl";
+        private const string ExecutableName = "clidsl";
 
         public const string BatPreset = "bat";
         public const string ShPreset = "sh";
