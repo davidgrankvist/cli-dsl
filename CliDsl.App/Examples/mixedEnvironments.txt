@@ -1,0 +1,29 @@
+﻿cmd helloSh sh {
+    echo "Hello from sh"
+}
+
+cmd helloBash bash {
+    echo "Hello from bash"
+}
+
+cmd helloPs ps {
+    Write-Host "Hello from PowerShell"
+}
+
+cmd helloBat bat {
+    echo Hello from cmd
+}
+
+cmd self bat {
+    echo Hello from cmd (self)
+}
+
+cmd helloMixedWin cmdz {
+    hellobat
+    hellops
+}
+
+cmd helloMixedUnix cmdz {
+    helloSh
+    helloBash
+}
