@@ -2,7 +2,7 @@
 {
     public class AstScriptCommand : AstCommand
     {
-        public AstScriptCommand(string name, string environment, string script)
+        public AstScriptCommand(string name, ScriptEnvironment environment, string script)
             : base (name, environment)
         {
             Script = script;

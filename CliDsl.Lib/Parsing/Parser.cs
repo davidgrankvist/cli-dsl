@@ -56,10 +56,11 @@ namespace CliDsl.Lib.Parsing
             }
             var command = tokens[curr];
             var identifier = tokens[curr + 1].RawToken;
-            var environment = tokens[curr + 2].RawToken;
+            var environmentName = tokens[curr + 2].RawToken;
+            var environment = ToEnvironment(environmentName);
 
             AstCommand parsedCommand;
-            if (environment == AstParentCommand.ParentCommandEnvironment)
+            if (environment == ScriptEnvironment.ParentCommand)
             {
                 parsedCommand = ParseParentCommand(tokens, curr + 4, identifier);
             }
@@ -93,6 +94,36 @@ namespace CliDsl.Lib.Parsing
             var summary = tokens[curr + 2].RawToken;
 
             return summary;
+        }
+
+        private static ScriptEnvironment ToEnvironment(string environmentName)
+        {
+            ScriptEnvironment environment;
+            switch (environmentName)
+            {
+                case "cmds":
+                    environment = ScriptEnvironment.ParentCommand;
+                    break;
+                case "cmd":
+                    environment = ScriptEnvironment.Commands;
+                    break;
+                case "sh":
+                    environment = ScriptEnvironment.Sh;
+                    break;
+                case "bash":
+                    environment = ScriptEnvironment.Bash;
+                    break;
+                case "ps":
+                    environment = ScriptEnvironment.PowerShell;
+                    break;
+                case "bat":
+                    environment = ScriptEnvironment.Batch;
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unknown script environment: {environmentName}");
+            }
+
+            return environment;
         }
     }
 }

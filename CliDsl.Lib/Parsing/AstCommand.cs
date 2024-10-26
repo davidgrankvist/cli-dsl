@@ -4,14 +4,14 @@ namespace CliDsl.Lib.Parsing
 {
     public class AstCommand
     {
-        public AstCommand(string name, string environment)
+        public AstCommand(string name, ScriptEnvironment environment)
         {
             Name = name;
             Environment = environment;
         }
         public string Name { get; }
 
-        public string Environment { get; }
+        public ScriptEnvironment Environment { get; }
 
         public override bool Equals(object? obj)
         {

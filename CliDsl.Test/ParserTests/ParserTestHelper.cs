@@ -8,16 +8,20 @@ namespace CliDsl.Test.ParserTests
     {
         public static (IEnumerable<LexerToken> ExpectedTokens, AstParentCommand ExpectedAst) CreateSimpleCommand()
         {
+            var script = @"
+echo hello
+echo goodbye
+";
             var tokens = new List<LexerToken>()
             {
                 new LexerToken(LexerTokenType.Command),
                 new LexerToken(LexerTokenType.Identifier, "something"),
                 new LexerToken(LexerTokenType.ScriptType, "sh"),
                 new LexerToken(LexerTokenType.BlockStart),
-                    new LexerToken(LexerTokenType.Script, "echo hello\necho goodbye"),
+                    new LexerToken(LexerTokenType.Script, script),
                 new LexerToken(LexerTokenType.BlockEnd),
             };
-            var ast = new AstParentCommand("root", "", [new AstScriptCommand("something", "sh", "echo hello\necho goodbye")], []);
+            var ast = new AstParentCommand("root", "", [new AstScriptCommand("something", ScriptEnvironment.Sh, script)], []);
 
 
             return (tokens, ast);
@@ -48,8 +52,8 @@ namespace CliDsl.Test.ParserTests
             };
             var ast = new AstParentCommand("root", "", [
                 new AstParentCommand("build", "", [
-                    new AstScriptCommand("server", "sh", "echo server"),
-                    new AstScriptCommand("client", "sh", "echo client"),
+                    new AstScriptCommand("server", ScriptEnvironment.Sh, "echo server"),
+                    new AstScriptCommand("client", ScriptEnvironment.Sh, "echo client"),
                 ], []),
             ], []);
 
@@ -90,7 +94,7 @@ namespace CliDsl.Test.ParserTests
                 new LexerToken(LexerTokenType.BlockEnd),
             };
             var ast = new AstParentCommand("root", "", [
-                new AstScriptCommand("self", "sh", "echo hello"),
+                new AstScriptCommand("self", ScriptEnvironment.Sh, "echo hello"),
             ], []);
 
             return (tokens, ast);
@@ -98,17 +102,23 @@ namespace CliDsl.Test.ParserTests
 
         public static (IEnumerable<LexerToken> ExpectedTokens, AstParentCommand ExpectedAst) CreatedIndentedEmbeddedScript()
         {
+            var script = @"
+for (($i = 0); $i -lt 10; $i++)
+{
+    Write-Host $i
+}
+";
             var tokens = new List<LexerToken>()
             {
                 new LexerToken(LexerTokenType.Command),
                 new LexerToken(LexerTokenType.Identifier, "something"),
-                new LexerToken(LexerTokenType.ScriptType, "madeUpLang"),
+                new LexerToken(LexerTokenType.ScriptType, "ps"),
                 new LexerToken(LexerTokenType.BlockStart),
-                    new LexerToken(LexerTokenType.Script, "for thing in things\n    echo thing.status\nend"),
+                    new LexerToken(LexerTokenType.Script, script),
                 new LexerToken(LexerTokenType.BlockEnd),
             };
             var ast = new AstParentCommand("root", "", [
-                new AstScriptCommand("something", "madeUpLang", "for thing in things\n    echo thing.status\nend"),    
+                new AstScriptCommand("something", ScriptEnvironment.PowerShell, script),    
             ], []);
             return (tokens, ast);
         }

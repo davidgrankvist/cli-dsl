@@ -2,10 +2,8 @@
 {
     public class AstParentCommand : AstCommand
     {
-        public const string ParentCommandEnvironment = "cmds";
-        
         public AstParentCommand(string name, string summary, List<AstCommand> commands, List<AstArgument> arguments)
-            : base(name, ParentCommandEnvironment)
+            : base(name, ScriptEnvironment.ParentCommand)
         {
             Summary = summary;
             Commands = commands;
