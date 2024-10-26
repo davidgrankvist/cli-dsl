@@ -13,6 +13,11 @@ namespace CliDsl.Lib.Engine
             {
                 process.Start();
                 process.WaitForExit();
+
+                if (process.ExitCode != 0)
+                {
+                    throw new Exception($"Embedded script failed with non-zero exit code: {command.Name}");
+                }
             }
         }
 
